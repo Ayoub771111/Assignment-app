@@ -1,110 +1,65 @@
-<br/>
 
-<h2>Ajout d'un Devoir</h2>
-<form ngForm (submit)="onSubmit(); assigmentForm.reset()"  #assigmentForm>
-    <mat-form-field>
-        <input matInput [(ngModel)]="nomDevoir" name="nom" 
-        placeholder="Nom du devoir" required>
-    </mat-form-field>
-    <!-- comm -->
-    <mat-form-field>
-        <mat-label>Choisir date de rendu</mat-label>
-        <input matInput [matDatepicker]="picker"
-               [(ngModel)]="dateDeRendu" name="date">
-        <mat-hint>MM/DD/YYYY</mat-hint>
-        <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
-        <mat-datepicker #picker></mat-datepicker>
-      </mat-form-field>
-    
-    
-      <button [disabled]="!nomDevoir||!dateDeRendu" mat-stroked-button color="primary">
-        Ajouter un devoir
-      </button>
-    </form>
-    
-    <h2>Liste des devoirs :</h2>
-    <ul>
-        <li *ngFor="let a of assignments">
-          Le devoir {{ a.nom }}, à rendre pour le {{ a.dateDeRendu | date:'MM/dd/YYYY'}}, rendu :
-          {{ a.rendu }}
-        </li>
-      </ul>
+<form ngForm #assigmentForm (submit)="onSubmit($event); assigmentForm.reset()" class="form">
+  <mat-form-field>
+      <input matInput placeholder="Nom" [(ngModel)]="nomDevoir" name="nom">
+  </mat-form-field>
+  <mat-form-field>
+      <mat-label>Choose a date</mat-label>
+      <input matInput [matDatepicker]="picker" [(ngModel)]="dateDevoir" name="date">
+      <mat-hint>MM/DD/YYYY</mat-hint>
+      <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+      <mat-datepicker #picker></mat-datepicker>
+  </mat-form-field>
+  <button mat-stroked-button color="primary" [disabled]="ajoutActive">
+      Ajouter un devoir
+  </button>
+</form>
 
-    <!--
-    <h3>
-      Avec la méthode Angular inférieure à version 17 (nécessite d'importer
-      CommonModule)
-    </h3>
-    <div *ngFor="let a of assignments">
-      <p *ngIf="a.rendu; else nonsoumis">
-        Le devoir {{ a.nom }}, à rendre pour le {{ a.dateDeRendu }}, rendu :
-        {{ a.rendu }}
-      </p>
-      <ng-template #nonsoumis> Devoir {{ a.nom }} PAS RENDU A TEMPS ! </ng-template>
-    </div>
-    
-    <p>Autre exemple avec une liste UL/LI</p>
-   
-    
-    <p>Autre exemple avec une table TR/TD</p>
-    <table>
-      <thead>
-        <tr>
-          <th>Nom</th>
-          <th>Date de rendu</th>
-          <th>Rendu</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr *ngFor="let a of assignments">
-          <td>{{ a.nom }}</td>
-          <td>{{ a.dateDeRendu | date:'MM/dd/YYYY'}}</td>
-          <td>{{ a.rendu }}</td>
-        </tr>
-      </tbody>
-    </table>
-    
-    <h3>Avec la syntaxe d'Angular 17</h3>
-    @for(a of assignments; track a.nom; let index=$index; let count = $count) {
-    @if(a.rendu) {
-    <p appRendu>
-      {{ index + 1 }}/{{ count }} - Le devoir {{ a.nom }}, à rendre pour le
-      {{ a.dateDeRendu }}, rendu :
-      {{ a.rendu }}
-    </p>
-    } @else {
-    <p appNonRendu>
-      {{ index + 1 }}/{{ count }} - Devoir {{ a.nom }} PAS RENDU A TEMPS !
-    </p>
-    } }
-    
-    <p>Avec listes</p>
-    <ul>
-      @for(a of assignments; track a.nom) {
-      <li [ngClass]="{ rendu: a.rendu, nonRendu: !a.rendu }">
-        Le devoir {{ a.nom }}, à rendre pour le {{ a.dateDeRendu }}, rendu :
-        {{ a.rendu }}
-      </li>
+<p>Liste des devoirs !</p>
+<!--<table>
+  <thead>
+      <tr>
+          <th>
+              Nom
+          </th>
+          <th>
+              Date
+          </th>
+          <th>
+              Rendu
+          </th>
+      </tr>
+  </thead>
+  <tbody>
+      @for (assignment of assignments; track assignment.nom) {
+      <tr>
+          <td>{{ assignment.nom }}</td>
+          <td>{{ assignment.dateDeRendu | date }}</td>
+          <td [ngClass]="{'rendu': assignment.rendu, 'non-rendu' : !assignment.rendu}">
+              @if (assignment.rendu) {
+              Devoir rendu
+              } @else {
+              Devoir non rendu
+              }
+          </td>
+      </tr>
       }
-    </ul>
-    
-    <p>Avec tableau</p>
-    <table>
-      <thead>
-        <tr>
-          <th>Nom</th>
-          <th>Date de rendu</th>
-          <th>Rendu</th>
-        </tr>
-      </thead>
-      <tbody>
-        @for(a of assignments; track a.nom) {
-        <tr>
-          <td>{{ a.nom }}</td>
-          <td>{{ a.dateDeRendu }}</td>
-          <td>{{ a.rendu }}</td>
-        </tr>
-        }
-      </tbody>
-    </table>
--->
+  </tbody>
+</table>-->
+<mat-list>
+  @for (assignment of assignments; track assignment.nom) {
+  <h3 mat-subheader>{{ assignment.dateDeRendu | date }}</h3>
+  <mat-list-item (click)="assignmentClique(assignment)">
+      <p [ngClass]="{'rendu': assignment.rendu, 'non-rendu' : !assignment.rendu}">
+          @if (assignment.rendu) {
+          Devoir intitulé {{ assignment.nom }} a été rendu.
+          }
+          @else {
+          Le devoir {{ assignment.nom }} n'a pas été rendu.
+          }
+      </p>
+  </mat-list-item>
+  <mat-divider [inset]="true"></mat-divider>
+  }
+</mat-list>
+<app-assignment-detail [assignmentTrasmis]="assignementSelectionne"></app-assignment-detail>
